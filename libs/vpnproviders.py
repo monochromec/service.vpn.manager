@@ -19,6 +19,8 @@
 #    Various pieces of VPN provider code used by the add-on.
 
 import os
+# For os.chmod
+import stat
 import xbmc
 import xbmcgui
 import xbmcvfs
@@ -301,6 +303,9 @@ def copyKeyAndCert(vpn_provider, ovpn_name, user_key, user_cert):
             errorTrace("vpnproviders.py", str(e))
             return False
     
+    # Attack surface reduction: set the key and cert file to 0600 
+    os.chmod(key_dest, stat.S_IRUSR|stat.S_IWUSR)
+    os.chmod(cert_dest, stat.S_IRUSR|stat.S_IWUSR)
 
 def getKeyName(vpn_provider, ovpn_name):
     # Determines the user key name based on the provider
